@@ -60,16 +60,16 @@ const search = (info) => {
 };
 
 const track = (id) => {
-	const url = 'https://music-api.gdstudio.xyz/api.php?types=url&source=kuwo&id=' +
-			id; 
-	// : 'http://www.kuwo.cn/url?format=mp3&response=url&type=convert_url3&br=320kmp3&rid=' + id 
+	const url =
+		'https://music-api.gdstudio.xyz/api.php?types=url&source=kuwo&id=' + id;
+	// : 'http://www.kuwo.cn/url?format=mp3&response=url&type=convert_url3&br=320kmp3&rid=' + id
 
 	return request('GET', url, { 'user-agent': 'okhttp/3.10.0' })
-    	.then(response => response.body())
-    	.then(body => {
-        // 新正则规则：精准匹配 "url": 后的网址（支持双引号或单引号）
-        	const urlMatch = body.match(/"url"\s*:\s*["']([^"'\s]+)["']/);
-        	return urlMatch ? urlMatch[1] : Promise.reject();
+		.then((response) => response.body())
+		.then((body) => {
+			// 新正则规则：精准匹配 "url": 后的网址（支持双引号或单引号）
+			const urlMatch = body.match(/"url"\s*:\s*["']([^"'\s]+)["']/);
+			return urlMatch ? urlMatch[1] : Promise.reject();
 		})
 		.catch(() => insure().kuwo.track(id));
 };
