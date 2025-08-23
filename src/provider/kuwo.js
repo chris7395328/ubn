@@ -60,25 +60,16 @@ const search = (info) => {
 };
 
 const track = (id) => {
-	const url = crypto.kuwoapi
-		? 'http://mobi.kuwo.cn/mobi.s?f=kuwo&q=' +
-			crypto.kuwoapi.encryptQuery(
-				'corp=kuwo&source=kwplayer_ar_5.1.0.0_B_jiakong_vh.apk&p2p=1&type=convert_url2&sig=0&format=' +
-					['flac', 'mp3']
-						.slice(select.ENABLE_FLAC ? 0 : 1)
-						.join('|') +
-					'&rid=' +
-					id
-			)
-		: 'http://antiserver.kuwo.cn/anti.s?type=convert_url&format=mp3&response=url&rid=MUSIC_' +
-			id; // flac refuse
-	// : 'http://www.kuwo.cn/url?format=mp3&response=url&type=convert_url3&br=320kmp3&rid=' + id // flac refuse
+	const url = 'https://music-api.gdstudio.xyz/api.php?types=url&source=kuwo&id=' +
+			id; 
+	// : 'http://www.kuwo.cn/url?format=mp3&response=url&type=convert_url3&br=320kmp3&rid=' + id 
 
 	return request('GET', url, { 'user-agent': 'okhttp/3.10.0' })
-		.then((response) => response.body())
-		.then((body) => {
-			const url = (body.match(/http[^\s$"]+/) || [])[0];
-			return url || Promise.reject();
+    	.then(response => response.body())
+    	.then(body => {
+        // 新正则规则：精准匹配 "url": 后的网址（支持双引号或单引号）
+        	const urlMatch = body.match(/"url"\s*:\s*["']([^"'\s]+)["']/);
+        	return urlMatch ? urlMatch[1] : Promise.reject();
 		})
 		.catch(() => insure().kuwo.track(id));
 };
