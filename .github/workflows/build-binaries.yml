@@ -35,10 +35,10 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
 
             - name: Use Node.js 20
-              uses: actions/setup-node@v5
+              uses: actions/setup-node@v6
               with:
                   node-version: 20
                   cache: yarn
@@ -63,7 +63,7 @@ jobs:
                   echo "ASSET_NAME=$(ls dist)" >> $GITHUB_ENV
 
             - name: Publishing to GitHub Artifacts
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v6
               if: github.event_name != 'release'
               with:
                   name: ${{ env.ASSET_NAME }}
@@ -71,7 +71,7 @@ jobs:
                       ./dist/*
 
             - name: Publishing to GitHub Releases
-              uses: svenstaro/upload-release-action@2.11.2
+              uses: svenstaro/upload-release-action@2.11.3
               if: github.event_name == 'release'
               with:
                   repo_token: ${{ github.token }}
